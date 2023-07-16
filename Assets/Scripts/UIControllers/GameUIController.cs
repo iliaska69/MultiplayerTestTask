@@ -8,7 +8,9 @@ using UnityEngine;
 public class GameUIController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI coinAmountTMP;
-    [SerializeField] private LevelFinishedUIController levelFinishedUIController; 
+    [SerializeField] private LevelFinishedUIController levelFinishedUIController;
+
+    [SerializeField] private GameObject inputGameUI;
     public void ShootButtonClick()
     {
         InputManager.instance.HandleShoot();
@@ -33,6 +35,7 @@ public class GameUIController : MonoBehaviour
 
     private void OnLevelFinished(Player winnerPlayer, int coinAmount)
     {
+        inputGameUI.SetActive(false);
         levelFinishedUIController.ShowWinner(winnerPlayer, coinAmount);
     }
 }

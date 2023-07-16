@@ -31,15 +31,7 @@ public class Game : NetworkBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(this);
-
         
-        
-        // foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        // {
-        //     var player = Instantiate(playerPrefab);
-        //     player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        // }
-        //NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEvent;
         NetworkManager.Singleton.OnClientConnectedCallback += OnPlayerConnected;
     }
 
@@ -59,7 +51,6 @@ public class Game : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("!!!!!!!" + IsServer);
         if (IsServer)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEvent;
@@ -77,12 +68,10 @@ public class Game : NetworkBehaviour
 
     public void RegisterPlayer(Player player)
     {
-        //_players.Add(player);
         playerRegisteredEvent.Invoke();
     }
     public void RegisterPlayerAsOwner(Player player)
     {
-        //_players.Add(player);
         _ownerPlayer = player;
         var playerNetworkObjectReference = player.GetNetworkObject();
         RegisterPlayerServerRPC(playerNetworkObjectReference);
@@ -105,7 +94,6 @@ public class Game : NetworkBehaviour
         {
             var winnerPlayer = _players[0];
             _players.Clear();
-            Debug.Log("FINISH" + player.PlayerName);
             GameFinishedClientRpc(winnerPlayer.GetNetworkObject(), winnerPlayer.CoinAmount);
         }
     }
@@ -122,12 +110,6 @@ public class Game : NetworkBehaviour
         playerNetworkObjectReference.TryGet(out NetworkObject playerNetworkObject);
         var player = playerNetworkObject.GetComponent<Player>();
         _players.Add(player);
-
-        
-        foreach (var item in _players)
-        {
-            Debug.Log("SERVER GAME: " + item);
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -155,7 +137,5 @@ public class Game : NetworkBehaviour
         playerNetworkObjectReference.TryGet(out NetworkObject playerNetworkObject);
         var winnerPlayer = playerNetworkObject.GetComponent<Player>();
         levelFinishedEvent?.Invoke(winnerPlayer, coinAmount);
-        
-        Debug.Log("CLIENT FINISH" + winnerPlayer.PlayerName);
     }
 }
