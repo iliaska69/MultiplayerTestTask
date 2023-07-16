@@ -1,7 +1,8 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float damage;
@@ -11,6 +12,7 @@ public class Bullet : MonoBehaviour
     private void Awake()
     {
         _bulletTransform = transform;
+        Debug.Log("SPAWNED!!" + gameObject.GetInstanceID() + "  " + gameObject.name);
     }
 
     private void Update()
@@ -26,10 +28,12 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        Debug.Log("DAMAGED");
         var damageableComponent = col.GetComponent<IDamageable>();
         if(damageableComponent == null) return;
         damageableComponent.Damage(damage);
         Destroy(gameObject);
     }
+    
 
 }

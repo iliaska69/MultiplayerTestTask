@@ -1,10 +1,23 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class Coin : MonoBehaviour, ICollectable
+public class Coin : NetworkBehaviour, ICollectable
 {
     public void Collect(Player sender)
     {
         Game.instance.AddCoin(sender);
-        Destroy(gameObject);
+        DisableCoinServerRPC();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DisableCoinServerRPC()
+    {
+        DisableCoinClientRPC();
+    }
+    
+    [ClientRpc]
+    private void DisableCoinClientRPC()
+    {
+        gameObject.SetActive(false);
     }
 }

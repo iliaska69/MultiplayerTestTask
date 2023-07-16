@@ -1,7 +1,8 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviour
+public abstract class Weapon : NetworkBehaviour
 {
     private Transform _weaponTransform;
     protected Vector3 NormalizedWeaponDirection;
@@ -21,6 +22,7 @@ public abstract class Weapon : MonoBehaviour
 
     private void HandleRotation()
     {
+        if(!IsOwner) return;
         var weaponDirection = InputManager.instance.GetMovementDirection();
         if(weaponDirection == Vector2.zero) return;
         NormalizedWeaponDirection = Vector3.Normalize(weaponDirection);
